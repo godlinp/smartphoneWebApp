@@ -4,7 +4,7 @@
     {
       "src": "smartphone-ui-zone/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist/smartphone-ui-zone" }
+      "config": { "distDir": "dist/smartphone-ui-zone/browser" }
     }
   ],
   "routes": [
