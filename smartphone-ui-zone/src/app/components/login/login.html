@@ -1,0 +1,153 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-sm-4">
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-primary text-white text-center py-3">
+          <h3 class="mb-0">
+            <i class="bi bi-person-lock me-2"></i>
+            Login
+          </h3>
+        </div>
+        <div class="card-body p-4">
+          <!-- Success Alert -->
+          <div
+            class="alert alert-success alert-dismissible fade show"
+            role="alert"
+            *ngIf="successMessage"
+          >
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {{ successMessage }}
+          </div>
+
+          <!-- Error Alert -->
+          <div
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+            *ngIf="errorMessage"
+          >
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ errorMessage }}
+          </div>
+
+          <!-- Login Form -->
+          <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" novalidate>
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label for="email" class="form-label fw-semibold">
+                <i class="bi bi-envelope me-1"></i>
+                Email
+              </label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                [(ngModel)]="loginData.email"
+                #email="ngModel"
+                required
+                email
+                placeholder="Enter your email"
+                [class.is-invalid]="
+                  email.invalid && (email.dirty || email.touched)
+                "
+                [class.is-valid]="email.valid && (email.dirty || email.touched)"
+              />
+
+              <!-- Email Validation Messages -->
+              <div
+                class="invalid-feedback"
+                *ngIf="email.invalid && (email.dirty || email.touched)"
+              >
+                <div *ngIf="email.errors?.['required']">
+                  <i class="bi bi-exclamation-circle me-1"></i>
+                  Email is required.
+                </div>
+                <div *ngIf="email.errors?.['email']">
+                  <i class="bi bi-exclamation-circle me-1"></i>
+                  Please enter a valid email address.
+                </div>
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-4">
+              <label for="password" class="form-label fw-semibold">
+                <i class="bi bi-lock me-1"></i>
+                Password
+              </label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                [(ngModel)]="loginData.password"
+                #password="ngModel"
+                required
+                minlength="6"
+                placeholder="Enter your password"
+                [class.is-invalid]="
+                  password.invalid && (password.dirty || password.touched)
+                "
+                [class.is-valid]="
+                  password.valid && (password.dirty || password.touched)
+                "
+              />
+
+              <!-- Password Validation Messages -->
+              <div
+                class="invalid-feedback"
+                *ngIf="password.invalid && (password.dirty || password.touched)"
+              >
+                <div *ngIf="password.errors?.['required']">
+                  <i class="bi bi-exclamation-circle me-1"></i>
+                  Password is required.
+                </div>
+                <div *ngIf="password.errors?.['minlength']">
+                  <i class="bi bi-exclamation-circle me-1"></i>
+                  Password must be at least 6 characters long.
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Buttons -->
+            <div class="d-grid gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg"
+                [disabled]="loginForm.invalid || isLoading"
+              >
+                <span
+                  *ngIf="isLoading"
+                  class="spinner-border spinner-border-sm me-2"
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </span>
+                <i class="bi bi-box-arrow-in-right me-2" *ngIf="!isLoading"></i>
+                {{ isLoading ? "Logging in..." : "Login" }}
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="onReset(loginForm)"
+                [disabled]="isLoading"
+              >
+                <i class="bi bi-arrow-clockwise me-2"></i>
+                Reset
+              </button>
+            </div>
+          </form>
+
+          <!-- Additional Links -->
+          <div class="text-center mt-4">
+            <small class="text-muted">
+              Don't have an account?
+              <a href="#" class="text-decoration-none">Sign up here</a>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

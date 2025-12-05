@@ -1,0 +1,73 @@
+.navbar-brand {
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.navbar-brand:hover {
+  opacity: 0.8;
+}
+
+.logo-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  margin-right: 12px;
+}
+
+.logo-image {
+  height: 50px;
+  width: auto;
+  min-width: 50px;
+  max-width: 80px;
+  object-fit: contain;
+  display: inline-block !important;
+  background: transparent;
+  transition: transform 0.3s, opacity 0.3s;
+  vertical-align: middle;
+  /* Product image - no filter needed, show original colors */
+  opacity: 1;
+  visibility: visible;
+  border-radius: 8px;
+}
+
+.logo-image:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+.logo-fallback {
+  font-size: 1.8rem;
+  color: white;
+  display: inline-block;
+}
+
+.brand-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .logo-image {
+    height: 32px;
+    margin-right: 8px;
+  }
+
+  .brand-text {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand-text {
+    font-size: 1rem;
+  }
+
+  .logo-image {
+    height: 28px;
+    margin-right: 6px;
+  }
+}

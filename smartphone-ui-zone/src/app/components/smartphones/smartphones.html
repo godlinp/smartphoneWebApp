@@ -1,0 +1,235 @@
+<!-- src/app/components/smartphones/smartphones.html -->
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Smartphones</h2>
+    <button
+      *ngIf="isLoggedIn"
+      class="btn btn-primary"
+      (click)="onAddClick()"
+    >
+      Add Smartphone
+    </button>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body row gy-3 gx-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">Search</label>
+        <input
+          class="form-control"
+          placeholder="Name or description"
+          [(ngModel)]="filters.searchText"
+          (ngModelChange)="onFiltersChange()"
+        />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Manufacturer</label>
+        <select
+          class="form-select"
+          [(ngModel)]="filters.manufacturerId"
+          (change)="onFiltersChange()"
+        >
+          <option [ngValue]="0">All manufacturers</option>
+          <option
+            *ngFor="let manufacturer of manufacturers"
+            [ngValue]="manufacturer.manufacturerId"
+          >
+            {{ manufacturer.manufacturerName }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Specification</label>
+        <select
+          class="form-select"
+          [(ngModel)]="filters.specId"
+          (change)="onFiltersChange()"
+        >
+          <option [ngValue]="0">All specifications</option>
+          <option *ngFor="let spec of specifications" [ngValue]="spec.specId">
+            {{ spec.processor }} / {{ spec.ram }} / {{ spec.storage }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-1 d-flex">
+        <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="feedbackMessage" class="alert alert-success">
+    {{ feedbackMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">S.No</th>
+              <th scope="col">Smartphone</th>
+              <th scope="col">Description</th>
+              <th *ngIf="isLoggedIn" scope="col" class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="
+                let phone of filteredSmartphones;
+                let index = index;
+                trackBy: trackById
+              "
+            >
+              <td>{{ index + 1 }}</td>
+              <td class="fw-semibold">{{ phone.name }}</td>
+              <td>{{ phone.description }}</td>
+              <td *ngIf="isLoggedIn" class="text-end">
+                <button
+                  class="btn btn-sm btn-outline-secondary me-2"
+                  (click)="onEditClick(phone)"
+                >
+                  Edit
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="onDeleteClick(phone)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="!filteredSmartphones.length && !isLoadingList">
+              <td
+                [attr.colspan]="isLoggedIn ? 4 : 3"
+                class="text-center py-4 text-muted"
+              >
+                No smartphones match the current filters.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-4 text-center" *ngIf="isLoadingList">
+        <div class="spinner-border text-primary" role="status"></div>
+        <div class="mt-2 text-muted">Loading smartphones...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal-style form overlay -->
+  <div *ngIf="showForm">
+    <!-- Backdrop -->
+    <div class="modal-backdrop fade show"></div>
+
+    <!-- Centered modal -->
+    <div
+      class="modal fade show d-block"
+      tabindex="-1"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              {{ formMode === 'add' ? 'Add Smartphone' : 'Edit Smartphone' }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              aria-label="Close"
+              (click)="cancelForm()"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <form
+              #smartphoneForm="ngForm"
+              (ngSubmit)="submitSmartphone(smartphoneForm)"
+            >
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Name</label>
+                  <input
+                    name="name"
+                    class="form-control"
+                    [(ngModel)]="formModel.name"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Manufacturer</label>
+                  <select
+                    name="manufacturerId"
+                    class="form-select"
+                    [(ngModel)]="formModel.manufacturerId"
+                    required
+                  >
+                    <option [ngValue]="0" disabled>Select manufacturer</option>
+                    <option
+                      *ngFor="let manufacturer of manufacturers"
+                      [ngValue]="manufacturer.manufacturerId"
+                    >
+                      {{ manufacturer.manufacturerName }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Description</label>
+                  <textarea
+                    name="description"
+                    class="form-control"
+                    rows="3"
+                    [(ngModel)]="formModel.description"
+                    required
+                  ></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Specification</label>
+                  <select
+                    name="specId"
+                    class="form-select"
+                    [(ngModel)]="formModel.specId"
+                    required
+                  >
+                    <option [ngValue]="0" disabled>Select specification</option>
+                    <option
+                      *ngFor="let spec of specifications"
+                      [ngValue]="spec.specId"
+                    >
+                      {{ spec.processor }} / {{ spec.ram }} / {{ spec.storage }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="modal-footer mt-3">
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="cancelForm()"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="btn btn-primary"
+                  type="submit"
+                  [disabled]="isSaving"
+                >
+                  {{ formMode === 'add' ? 'Add' : 'Update' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
